@@ -16,6 +16,15 @@ createAppSettings() {
         sed -i "s#// \$config\['smtp_port'\] = 25#\$config['smtp_port'] = $SMTP_PORT#g" $PROJECT_DIR/application/config/email.php
     fi
     sed -i "s/url-to-easyappointments-directory/$APP_URL/g" $PROJECT_DIR/config.php
+    sed -i "s/english/$LANGUAGE/g" $PROJECT_DIR/config.php
+    if [ "$GOOGLE_SYNC" = "true" ]; then
+        echo "Setting up google sync..."
+        sed -i "s/GOOGLE_SYNC_FEATURE   = FALSE/GOOGLE_SYNC_FEATURE   = TRUE/g" $PROJECT_DIR/config.php
+        sed -i "s/GOOGLE_PRODUCT_NAME   = ''/GOOGLE_PRODUCT_NAME = '$GOOGLE_PRODUCT_NAME'/g" $PROJECT_DIR/config.php
+        sed -i "s/GOOGLE_CLIENT_ID      = ''/GOOGLE_CLIENT_ID = '$GOOGLE_CLIENT_ID'/g" $PROJECT_DIR/config.php
+        sed -i "s/GOOGLE_CLIENT_SECRET  = ''/GOOGLE_CLIENT_SECRET = '$GOOGLE_CLIENT_SECRET'/g" $PROJECT_DIR/config.php
+        sed -i "s/GOOGLE_API_KEY        = ''/GOOGLE_API_KEY = '$GOOGLE_API_KEY'/g" $PROJECT_DIR/config.php
+    fi
 
     chown -R www-data $PROJECT_DIR
 }
@@ -40,7 +49,7 @@ elif [ "$1" = "dev" ]; then
     sed -i "s/DEBUG_MODE    = FALSE/DEBUG_MODE    = TRUE/g" $PROJECT_DIR/config.php
 
     echo "Starting Easy!Appointments production server.."
-    
+
     exec docker-php-entrypoint apache2-foreground
 fi
 
