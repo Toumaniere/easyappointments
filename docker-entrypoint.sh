@@ -15,7 +15,7 @@ createAppSettings() {
         sed -i "s#// \$config\['smtp_crypto'\] = 'ssl'#\$config['smtp_crypto'] = '$SMTP_CRYPTO'#g" $PROJECT_DIR/application/config/email.php
         sed -i "s#// \$config\['smtp_port'\] = 25#\$config['smtp_port'] = $SMTP_PORT#g" $PROJECT_DIR/application/config/email.php
     fi
-    sed -i "s/url-to-easyappointments-directory/$APP_URL/g" $PROJECT_DIR/config.php
+    sed -i "s/http\:\/\/url-to-easyappointments-directory/$APP_URL/g" $PROJECT_DIR/config.php
     sed -i "s/english/$LANGUAGE/g" $PROJECT_DIR/config.php
     if [ "$GOOGLE_SYNC" = "true" ]; then
         echo "Setting up google sync..."
