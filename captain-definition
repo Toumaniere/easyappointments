@@ -1,0 +1,66 @@
+{
+    "captainVersion": "2",
+    "documentation": "https://github.com/caprover/one-click-apps",
+    "dockerCompose": {
+        "services": {
+          "$$cap_appname-db": {
+                "image": "mysql:5.7",
+                "notExposeAsWebApp": "true",
+                "volumes": [
+                    "$$cap_appname-db-data:/var/lib/mysql"
+                ],
+                "restart": "always",
+                "environment": {
+                    "MYSQL_ROOT_PASSWORD": "$$cap_mysql_password",
+                    "MYSQL_DATABASE": "$$cap_appname",
+                    "MYSQL_USER": "$$cap_appname",
+                    "MYSQL_PASSWORD": "$$cap_mysql_password"
+                }
+            },
+            "$$cap_appname": {
+                "dockerfileLines": [
+                    "FROM php:7.0-apache",
+                    "ENV PROJECT_DIR=/var/www/html",
+                    "RUN docker-php-ext-install mysqli gettext",
+                    "RUN apt update",
+                    "RUN apt install git -y",
+                    "RUN git clone https://github.com/Toumaniere/easyappointments.git",
+                    "RUN mv ./easyappointments/src/* $PROJECT_DIR",
+                    "RUN mv ./easyappointments/docker-entrypoint.sh /entrypoint.sh",
+                    "RUN sed -i 's/\r//' /entrypoint.sh",
+                    "VOLUME $PROJECT_DIR/storage",
+                    "CMD /bin/sh /entrypoint.sh run"
+                ],
+                "containerHttpPort": "80",
+                "environment": {
+                    "DB_HOST": "srv-captain--$$cap_appname-db",
+                    "DB_NAME": "$$cap_appname",
+                    "DB_USERNAME": "$$cap_appname",
+                    "DB_PASSWORD": "$$cap_mysql_password",
+                    "APP_URL": "$$cap_url",
+                    "LANGUAGE": "french"
+                },
+                "depends_on": ["$$cap_appname-db"],
+                "restart": "always"
+            }
+        }
+    },
+    "instructions": {
+        "start": "Easy Appointments",
+        "end": "Deployed !"
+    },
+    "variables": [
+        {
+            "id": "$$cap_mysql_password",
+            "label": "Database Password (same for root)",
+            "description": "",
+            "validRegex": "/.{1,}/"
+        },
+        {
+            "id": "$$cap_url",
+            "label": "App URL",
+            "description": "",
+            "validRegex": "/.{1,}/"
+        }
+    ]
+}

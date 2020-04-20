@@ -6,6 +6,8 @@ createAppSettings() {
     sed -i "s/DB_USERNAME   = ''/DB_USERNAME = '$DB_USERNAME'/g" $PROJECT_DIR/config.php
     sed -i "s/DB_PASSWORD   = ''/DB_PASSWORD = '$DB_PASSWORD'/g" $PROJECT_DIR/config.php
     sed -i "s/DB_NAME       = ''/DB_NAME = '$DB_NAME'/g" $PROJECT_DIR/config.php
+    sed -i "s|http://url-to-easyappointments-directory|$APP_URL|g" $PROJECT_DIR/config.php
+    sed -i "s/english/$LANGUAGE/g" $PROJECT_DIR/config.php
     if [ "$EMAIL_PROTOCOL" = "smtp" ]; then
         echo "Setting up email..."
         sed -i "s/\$config\['protocol'\] = 'mail'/\$config['protocol'] = 'smtp'/g" $PROJECT_DIR/application/config/email.php
@@ -15,8 +17,6 @@ createAppSettings() {
         sed -i "s#// \$config\['smtp_crypto'\] = 'ssl'#\$config['smtp_crypto'] = '$SMTP_CRYPTO'#g" $PROJECT_DIR/application/config/email.php
         sed -i "s#// \$config\['smtp_port'\] = 25#\$config['smtp_port'] = $SMTP_PORT#g" $PROJECT_DIR/application/config/email.php
     fi
-    sed -i "s/http\:\/\/url-to-easyappointments-directory/$APP_URL/g" $PROJECT_DIR/config.php
-    sed -i "s/english/$LANGUAGE/g" $PROJECT_DIR/config.php
     if [ "$GOOGLE_SYNC" = "true" ]; then
         echo "Setting up google sync..."
         sed -i "s/GOOGLE_SYNC_FEATURE   = FALSE/GOOGLE_SYNC_FEATURE   = TRUE/g" $PROJECT_DIR/config.php
